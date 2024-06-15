@@ -32,8 +32,9 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
+        android:text="Peso:"
         android:textSize="15dp"
-        android:text="Peso:" />
+        tools:ignore="TextSizeCheck" />
 
     <EditText
         android:id="@+id/etPeso"
@@ -49,8 +50,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
+        android:text="Altura:"
         android:textSize="15dp"
-        android:text="Altura:" />
+        tools:ignore="TextSizeCheck" />
 
     <EditText
         android:id="@+id/etAltura"
