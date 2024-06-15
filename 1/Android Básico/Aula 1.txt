@@ -1,0 +1,12 @@
+XLM
+Utilizar <LinearLayout </LinearLayout> no XML
+
+android:orientation="vertical"      -> Utilizar para deixar vertical os elementos
+android:layout_height="match_parent"-> Utilizado para considerar maior parte da tela (Tela como um todo)
+android:layout_width="wrap_content" -> Utilizado para considerar menor parte da tela
+
+TextView -> Saida de dados
+EditText -> Entrada de Dados
+Button   -> Botão
+
+android:inputType="numberDecimal" -> Tipo de input no EditText
