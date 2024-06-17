@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Calculadora IMC</string>
+    <string name="peso">Peso: </string>
+    <string name="altura">Altura: </string>
+    <string name="hint_peso">Peso em Kg </string>
+    <string name="hint_altura">Altura em m </string>
+    <string name="imc">IMC: </string>
+    <string name="zeros">0.0 </string>
+    <string name="calcular">Calcular </string>
+    <string name="limpar">Limpar </string>
+    <string name="toast_limpar">Limpo</string>
+    <string name="erro_peso">Campo Peso deve ser preenchido</string>
+    <string name="erro_altura">Campo Altura deve ser preenchido</string>
+    <string name="titulo">Calculadora de IMC</string>
+</resources>
