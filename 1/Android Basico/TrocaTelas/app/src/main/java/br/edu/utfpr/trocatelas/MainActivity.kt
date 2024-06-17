@@ -1,5 +1,6 @@
 package br.edu.utfpr.trocatelas
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +23,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun btLancamentoOnClick() {
-        TODO("Not yet implemented")
+        val intent = Intent(this, LancamentoActivity::class.java)
+        startActivity(intent)
     }
 
 
