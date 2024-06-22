@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#181818"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textColor="@color/white"
+        android:text="Login App"
+        android:layout_marginBottom="20dp"
+        />
+
+    <EditText
+        android:id="@+id/etEmail"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:autofillHints="emailAddress"
+        android:inputType="textEmailAddress"
+        android:hint="Email"
+        android:textColor="@color/white"
+        android:textColorHint="#757575"
+        />
+
+    <EditText
+        android:id="@+id/etPassword"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:autofillHints="password"
+        android:inputType="textPassword"
+        android:hint="Password"
+        android:textColor="@color/white"
+        android:textColorHint="#757575"
+        />
+
+    <Button
+        android:id="@+id/btContinue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continue"
+        android:textSize="18sp"
+        android:layout_margin="20dp"
+        />
+
+    <TextView
+        android:id="@+id/tvMove"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#03A9F4"
+        android:text="Don't have an account? Create here"
+        />
+
+
+</LinearLayout>

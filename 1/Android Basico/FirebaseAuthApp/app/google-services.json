@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "840059795190",
+    "project_id": "fir-authapp-c0bf4",
+    "storage_bucket": "fir-authapp-c0bf4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:840059795190:android:34df5dc50e37955c789ed7",
+        "android_client_info": {
+          "package_name": "br.edu.utfpr.firebaseauthapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtUAQQxCNj3r7WBDXs3QA4fQ3huAKycEU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
