@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">ConsBustivel</string>
+    <string name="insira_um_valor_em_r">Insira o valor do Litro em R$</string>
+    <string name="buscar">Buscar</string>
+    <string name="calcular">Calcular</string>
+    <string name="insira_km_l">Insira Km/L</string>
+    <string name="_1">1°</string>
+    <string name="_2">2°</string>
+    <string name="erro">Insira um valor</string>
+    <string name="resultado">Resultado</string>
+    <string name="limpar">Limpar</string>
+</resources>

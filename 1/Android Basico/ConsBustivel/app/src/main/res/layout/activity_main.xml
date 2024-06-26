@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:importantForAccessibility="no"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:context=".MainActivity">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutFuel1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toStartOf="@+id/btBuscar1"
+            app:layout_constraintStart_toEndOf="@+id/iconFuel1"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFuel1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/insira_km_l"
+                android:inputType="numberDecimal"
+                android:textColorHint="#546E7A"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutFuel2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iconFuel2"
+            app:layout_constraintEnd_toStartOf="@+id/btBuscar2"
+            app:layout_constraintStart_toStartOf="@+id/layoutFuel1"
+            app:layout_constraintTop_toTopOf="@+id/iconFuel2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFuel2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/insira_km_l"
+                android:inputType="numberDecimal"
+                android:textColorHint="#546E7A"
+                tools:ignore="VisualLintTextFieldSize,TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/iconFuel1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="8dp"
+            android:importantForAccessibility="no"
+            app:layout_constraintBottom_toBottomOf="@+id/layoutFuel1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/layoutFuel1"
+            app:srcCompat="@drawable/icon_fuel" />
+
+        <ImageView
+            android:id="@+id/iconFuel2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:importantForAccessibility="no"
+            app:layout_constraintStart_toStartOf="@+id/iconFuel1"
+            app:layout_constraintTop_toBottomOf="@+id/iconFuel1"
+            app:srcCompat="@drawable/icon_fuel" />
+
+        <Button
+            android:id="@+id/btBuscar1"
+            android:layout_width="wrap_content"
+            android:layout_height="63dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="12dp"
+            android:text="@string/buscar"
+            app:cornerRadius="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/layoutFuel1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/layoutFuel1"
+            tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck" />
+
+        <Button
+            android:id="@+id/btBuscar2"
+            android:layout_width="wrap_content"
+            android:layout_height="63dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginEnd="12dp"
+            android:text="@string/buscar"
+            app:cornerRadius="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/layoutFuel2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/layoutFuel2"
+            tools:ignore="TextContrastCheck" />
+
+        <TextView
+            android:id="@+id/tvFuelNumber1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-5dp"
+            android:layout_marginBottom="-10dp"
+            android:text="@string/_1"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iconFuel1"
+            app:layout_constraintStart_toEndOf="@+id/iconFuel1" />
+
+        <TextView
+            android:id="@+id/tvFuelNumber2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-5dp"
+            android:layout_marginBottom="-10dp"
+            android:text="@string/_2"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iconFuel2"
+            app:layout_constraintStart_toEndOf="@+id/iconFuel2" />
+
+        <ImageView
+            android:id="@+id/iconMoney1"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="46dp"
+            android:importantForAccessibility="no"
+            app:layout_constraintStart_toStartOf="@+id/iconFuel2"
+            app:layout_constraintTop_toBottomOf="@+id/iconFuel2"
+            app:srcCompat="@drawable/baseline_attach_money_24" />
+
+        <ImageView
+            android:id="@+id/iconMoney2"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="32dp"
+            android:importantForAccessibility="no"
+            app:layout_constraintStart_toStartOf="@+id/iconMoney1"
+            app:layout_constraintTop_toBottomOf="@+id/iconMoney1"
+            app:srcCompat="@drawable/baseline_attach_money_24" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutMoney1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iconMoney1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iconMoney1"
+            app:layout_constraintTop_toTopOf="@+id/iconMoney1">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMoney1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/insira_um_valor_em_r"
+                android:inputType="numberDecimal"
+                android:textColorHint="#546E7A"
+                tools:ignore="DuplicateSpeakableTextCheck,VisualLintTextFieldSize,TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutMoney2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintBottom_toBottomOf="@+id/iconMoney2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iconMoney2"
+            app:layout_constraintTop_toTopOf="@+id/iconMoney2">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etMoney2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/insira_um_valor_em_r"
+                android:inputType="numberDecimal"
+                android:textColorHint="#546E7A"
+                tools:ignore="VisualLintTextFieldSize,TextContrastCheck" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/tvMoneyNumber1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-5dp"
+            android:layout_marginBottom="-10dp"
+            android:text="@string/_1"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iconMoney1"
+            app:layout_constraintStart_toEndOf="@+id/iconMoney1" />
+
+        <TextView
+            android:id="@+id/tvMoneyNumber2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="-5dp"
+            android:layout_marginBottom="-10dp"
+            android:text="@string/_2"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@+id/iconMoney2"
+            app:layout_constraintStart_toEndOf="@+id/iconMoney2" />
+
+        <Button
+            android:id="@+id/btCalcular"
+            android:layout_width="150dp"
+            android:layout_height="63dp"
+            android:layout_marginEnd="32dp"
+            android:text="@string/calcular"
+            app:cornerRadius="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btLimpar"
+            tools:ignore="VisualLintButtonSize,TextContrastCheck" />
+
+        <EditText
+            android:id="@+id/tmCalculation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:autofillHints=""
+            android:background="@null"
+            android:editable="false"
+            android:elegantTextHeight="true"
+            android:ems="10"
+            android:gravity="center_horizontal"
+            android:importantForAutofill="yes"
+            android:inputType="none"
+            android:text="@string/resultado"
+            android:textAlignment="gravity"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btCalcular"
+            tools:ignore="Deprecated,LabelFor,RtlCompat,VisualLintTextFieldSize,TouchTargetSizeCheck" />
+
+        <Button
+            android:id="@+id/btLimpar"
+            android:layout_width="150dp"
+            android:layout_height="63dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="24dp"
+            android:text="@string/limpar"
+            app:cornerRadius="4dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutMoney2"
+            tools:ignore="TextContrastCheck" />
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/materialToolbar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:background="?attr/colorPrimary"
+            android:importantForAutofill="no"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tmCalculation" />
+
+        <EditText
+            android:id="@+id/etResult"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:background="@null"
+            android:editable="false"
+            android:elegantTextHeight="true"
+            android:ems="10"
+            android:gravity="center_horizontal"
+            android:inputType="none"
+            android:textAlignment="gravity"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="@+id/materialToolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/materialToolbar"
+            app:layout_constraintTop_toBottomOf="@+id/tmCalculation"
+            tools:ignore="Deprecated,LabelFor,SpeakableTextPresentCheck,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

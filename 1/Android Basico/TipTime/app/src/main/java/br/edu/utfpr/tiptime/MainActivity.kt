@@ -58,4 +58,5 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         outState.putString("tip", binding.tipResult.text.toString())
     }
+
 }
