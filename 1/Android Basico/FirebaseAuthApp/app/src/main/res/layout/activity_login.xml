@@ -56,5 +56,9 @@
         android:text="Don't have an account? Create here"
         />
 
+    <Button
+        android:id="@+id/btGoogle"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
 
 </LinearLayout>
