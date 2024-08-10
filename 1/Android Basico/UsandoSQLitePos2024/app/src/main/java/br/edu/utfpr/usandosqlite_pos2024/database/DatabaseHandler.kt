@@ -2,6 +2,7 @@ package br.edu.utfpr.usandosqlite_pos2024.database
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.widget.Toast
@@ -22,9 +23,9 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, DATABASE_NAME
         private const val DATABASE_NAME = "dbfile.sqlite"
         private const val DATABASE_VERSION = 1
         private const val TABLE_NAME = "cadastro"
-        private const val COD = 0
-        private const val NOME = 1
-        private const val TELEFONE = 2
+        public const val COD = 0
+        public const val NOME = 1
+        public const val TELEFONE = 2
 
     }
 
@@ -107,5 +108,21 @@ class DatabaseHandler(context: Context): SQLiteOpenHelper(context, DATABASE_NAME
         }
 
         return listaRegistros
+    }
+
+    fun cursorList(): Cursor {
+        val db = this.writableDatabase
+
+        val registro = db.query(
+            TABLE_NAME,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+        )
+
+        return registro
     }
 }
