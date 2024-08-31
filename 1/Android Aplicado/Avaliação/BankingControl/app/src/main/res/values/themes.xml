@@ -1,0 +1,14 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="Base.Theme.BankingControl" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">#AAAAAA</item>
+        <item name="android:fontFamily">sans-serif-black</item>
+    </style>
+
+    <style name="Theme.BankingControl" parent="Base.Theme.BankingControl" />
+
+    <style name="ChangeTextColor" parent="@android:style/TextAppearance.Widget.IconMenu.Item">
+
+    </style>
+</resources>
