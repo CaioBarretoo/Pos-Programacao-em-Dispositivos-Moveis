@@ -1,5 +1,7 @@
 package br.edu.utfpr.trabalhofinal.utils
 
+import android.graphics.drawable.Icon
+import androidx.compose.ui.graphics.Color
 import br.edu.utfpr.trabalhofinal.data.Conta
 import br.edu.utfpr.trabalhofinal.data.TipoContaEnum
 import java.math.BigDecimal
@@ -31,4 +33,16 @@ fun BigDecimal.formatar(): String {
 fun LocalDate.formatar(): String {
     val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
     return format(formatter)
+}
+
+fun Color.formatar(valor: BigDecimal): Color {
+    return when {
+        valor > BigDecimal.ZERO -> Color(0xFF00984E)
+        valor < BigDecimal.ZERO -> Color(0xFFCF5355)
+        else -> Color.Black
+    }
+}
+
+fun Icon.formatar(){
+
 }

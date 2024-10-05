@@ -56,29 +56,36 @@ class FormularioContaViewModel(
             )
         }
     }
-    private fun validarDescricao(descricao: String): Int = if (descricao.isBlank()) {
-        R.string.descricao_obrigatoria
-    } else {
-        0
-    }
-    fun onDataAlterada(novaData: String) {
-        if (state.data.valor != novaData) {
-            state = state.copy(
-                data = state.data.copy(
-                    valor = novaData
-                )
-            )
-        }
-    }
+
     fun onValorAlterado(novoValor: String) {
         if (state.valor.valor != novoValor) {
+            var novoValorRep = novoValor.replace(",", ".")
+            novoValorRep = novoValorRep.replace("-", "")
+            novoValorRep = novoValorRep.replace(" ", "")
             state = state.copy(
                 valor = state.valor.copy(
-                    valor = novoValor
+                    valor = novoValorRep,
+                    codigoMensagemErro = validarValor(novoValorRep)
                 )
             )
         }
     }
+
+    fun onDataAlterada(novaData: String) {
+        if (state.data.valor != novaData) {
+            var novaDataRep = novaData.replace(",", "")
+            novaDataRep = novaData.replace(".", "")
+            novaDataRep = novaData.replace("-", "")
+            novaDataRep = novaData.replace(" ", "")
+            state = state.copy(
+                data = state.data.copy(
+                    valor = novaDataRep,
+                    codigoMensagemErro = validarData(novaDataRep)
+                )
+            )
+        }
+    }
+
     fun onStatusPagamentoAlterado(novoStatusPagamento: String) {
         if (state.paga.valor != novoStatusPagamento) {
             state = state.copy(
@@ -97,6 +104,27 @@ class FormularioContaViewModel(
             )
         }
     }
+
+
+    private fun validarDescricao(descricao: String): Int = if (descricao.isBlank()) {
+        R.string.descricao_obrigatoria
+    } else {
+        0
+    }
+
+    private fun validarValor(valor: String): Int = if (valor.isBlank()){
+        R.string.valor_obrigatoria
+    } else {
+        0
+    }
+
+    private fun validarData(data: String): Int = if (data.isBlank()){
+        R.string.data_obrigatoria
+    } else {
+        0
+    }
+
+
     fun salvarConta() {
         if (formularioValido()) {
             state = state.copy(
@@ -120,7 +148,15 @@ class FormularioContaViewModel(
         state = state.copy(
             descricao = state.descricao.copy(
                 codigoMensagemErro = validarDescricao(state.descricao.valor)
+            ),
+            valor = state.valor.copy(
+                codigoMensagemErro = validarValor(state.valor.valor)
+            ),
+            data = state.data.copy(
+                codigoMensagemErro = validarData(state.data.valor)
             )
+
+
         )
         return state.formularioValido
     }

@@ -8,12 +8,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -143,7 +148,8 @@ private fun ListaVazia(modifier: Modifier = Modifier) {
             modifier = Modifier.padding(top = 8.dp, start = 8.dp, end = 8.dp),
             text = stringResource(R.string.lista_vazia_subtitle),
             style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
+            textAlign = TextAlign.Center
         )
     }
 }
@@ -164,11 +170,38 @@ private fun List(
 ) {
     LazyColumn(modifier = modifier) {
         items(contas) { conta ->
-            val descricao = "${conta.data.formatar()} - ${conta.descricao}"
-            ListItem(
-                modifier = Modifier.clickable { onContaPressed(conta) },
-                headlineContent = { Text(descricao) },
-            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onContaPressed(conta) }
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Notes,
+                    contentDescription = stringResource(id = R.string.descricao),
+                    tint = MaterialTheme.colorScheme.outline
+                )
+
+                Column {
+                    Text(
+                        text = conta.descricao,
+                        modifier = Modifier.padding(start = 16.dp)
+                    )
+                    Text(
+                        text = conta.data.formatar(),
+                        modifier = Modifier.padding(start = 16.dp),
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+
+                Spacer(Modifier.weight(1f))
+
+                Text(
+                    text = "R$ ${conta.valor}", // Formato de valor de exemplo
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }
@@ -191,6 +224,7 @@ private fun BottomBar(
 ) {
     Column(
         modifier = modifier
+            .navigationBarsPadding()
             .background(color = MaterialTheme.colorScheme.secondaryContainer),
     ) {
         Totalizador(
@@ -229,10 +263,12 @@ fun Totalizador(
         )
         Spacer(Modifier.size(10.dp))
         Text(
-            modifier = Modifier.width(100.dp),
+            modifier = Modifier
+                .widthIn(min = 0.dp, max = 200.dp),
             textAlign = TextAlign.End,
             text = valor.formatar(),
-            color = textColor
+            color = textColor.formatar(valor),
+            maxLines = 1,
         )
         Spacer(Modifier.size(20.dp))
     }

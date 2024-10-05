@@ -10,6 +10,8 @@
     <string name="saldo">Saldo</string>
     <string name="previsao">Previsão</string>
     <string name="descricao_obrigatoria">A descrição é obrigatória</string>
+    <string name="valor_obrigatoria">O valor é obrigatório</string>
+    <string name="data_obrigatoria">A data é obrigatória</string>
     <string name="nova_conta">Nova conta</string>
     <string name="editar_conta">Editar conta</string>
     <string name="voltar">Voltar</string>
@@ -19,7 +21,6 @@
     <string name="data">Data</string>
     <string name="valor">Valor</string>
     <string name="paga">Paga</string>
-    <string name="tipo">Tipo</string>
     <string name="erro_ao_salvar">Ocorreu um erro ao salvar. Aguarde um momento e tente novamente.</string>
     <string name="erro_ao_excluir">Ocorreu um erro ao excluir. Aguarde um momento e tente novamente.</string>
     <string name="lista_vazia_title">Nenhuma conta cadastrada</string>
