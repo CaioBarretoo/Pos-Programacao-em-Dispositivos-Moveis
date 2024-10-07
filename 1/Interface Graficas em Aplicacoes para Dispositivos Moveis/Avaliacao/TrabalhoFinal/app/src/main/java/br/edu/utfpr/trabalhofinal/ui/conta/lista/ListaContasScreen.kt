@@ -11,20 +11,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -33,10 +29,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -168,8 +164,11 @@ private fun List(
     contas: List<Conta>,
     onContaPressed: (Conta) -> Unit
 ) {
+
     LazyColumn(modifier = modifier) {
         items(contas) { conta ->
+            var textColor: Color = Color.Black
+            var iconColor: Color = Color.Black
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -178,9 +177,9 @@ private fun List(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.Notes,
+                    imageVector = Icons.formatar(conta),
                     contentDescription = stringResource(id = R.string.descricao),
-                    tint = MaterialTheme.colorScheme.outline
+                    tint = iconColor.formatar(conta.tipo)
                 )
 
                 Column {
@@ -190,16 +189,17 @@ private fun List(
                     )
                     Text(
                         text = conta.data.formatar(),
-                        modifier = Modifier.padding(start = 16.dp),
+                        modifier = Modifier.padding(start = 16.dp).alpha(0.6f),
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
 
                 Spacer(Modifier.weight(1f))
-
                 Text(
-                    text = "R$ ${conta.valor}", // Formato de valor de exemplo
-                    style = MaterialTheme.typography.bodyMedium
+                    text = conta.valor.formatar(conta.tipo),
+                    maxLines = 1,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = textColor.formatar(conta.tipo)
                 )
             }
         }

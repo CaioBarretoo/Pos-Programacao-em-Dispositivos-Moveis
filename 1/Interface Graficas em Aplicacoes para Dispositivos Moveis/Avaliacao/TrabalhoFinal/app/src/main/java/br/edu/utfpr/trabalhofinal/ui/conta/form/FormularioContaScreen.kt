@@ -24,7 +24,6 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -63,7 +62,6 @@ import br.edu.utfpr.trabalhofinal.ui.utils.composables.ErroAoCarregar
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
 
 
 @Composable
@@ -301,7 +299,7 @@ private fun FormContent(
         }
         Row(verticalAlignment = Alignment.CenterVertically) {
             Spacer(Modifier.size(24.dp))
-            DatePickerDocked(
+            FormDatePicker(
                 modifier = formTextFieldModifier,
                 titulo = stringResource(R.string.data),
                 campoFormulario = data,
@@ -383,17 +381,18 @@ fun FormCheckboxField(
     enabled: Boolean = true
 ) {
     var checked by remember { mutableStateOf(false) }
-    onValorAlterado(checked.toString())
+
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ){
         Checkbox(
-            checked = checked,
+            checked = campoFormulario.valor.toBoolean(),
             onCheckedChange = {
                 checked = it
-                onValorAlterado(checked.toString())}
+                onValorAlterado(checked.toString())},
+            enabled = enabled
         )
         Text(
             titulo
@@ -411,21 +410,24 @@ fun FormRadioGroup(
     onValorAlterado: (String) -> Unit,
     enabled: Boolean = true
 ) {
-    val selectedOption = remember { mutableStateOf(options[0]) }
-    onValorAlterado(selectedOption.value.uppercase())
+    LaunchedEffect(campoFormulario.valor) {
+        if (campoFormulario.valor.isBlank() && options.isNotEmpty()) {
+            onValorAlterado(options[0].uppercase())
+        }
+    }
 
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        options.forEach { option ->
+        options.forEach {option ->
             RadioButton(
-                selected = selectedOption.value == option,
+                selected = campoFormulario.valor == option.uppercase(),
                 onClick = {
-                    selectedOption.value = option
-                    onValorAlterado(selectedOption.value.uppercase())
-                }
+                    onValorAlterado(option.uppercase())
+                },
+                enabled = enabled
             )
             Text(option)
         }
@@ -435,7 +437,7 @@ fun FormRadioGroup(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerDocked(
+fun FormDatePicker(
     modifier: Modifier = Modifier,
     titulo: String,
     campoFormulario: CampoFormulario,
@@ -444,26 +446,15 @@ fun DatePickerDocked(
     keyboardCapitalization: KeyboardCapitalization = KeyboardCapitalization.Sentences,
     keyboardImeAction: ImeAction = ImeAction.Next,
     keyboardType: KeyboardType = KeyboardType.Text,
-    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
+
     val datePickerState = rememberDatePickerState(
         LocalDate.now().atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
     )
-    var selectedDate by remember { mutableStateOf("") }
 
-    LaunchedEffect(datePickerState.selectedDateMillis) {
-        selectedDate = (datePickerState.selectedDateMillis?.let {
-            convertMillisToDate(it)
-        } ?: "").replace("/","")
-
-        var datatext = if (selectedDate.length == 8) {
-            selectedDate.slice(4..7) + "-" + selectedDate.slice(2..3) + "-" + selectedDate.slice(0..1)
-        } else {
-            selectedDate
-        }
-        onValorAlterado(datatext)
-
+    if (campoFormulario.valor.isBlank()) {
+        onValorAlterado(dateToDb("06/10/2024"))
     }
 
     Box(
@@ -471,19 +462,17 @@ fun DatePickerDocked(
     ){
         OutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            value = selectedDate,
-            onValueChange = {
-                selectedDate = it.take(8)
-                onValorAlterado(selectedDate)
+            value = if (campoFormulario.valor.isBlank()) "" else dbToDate(campoFormulario.valor),
+            onValueChange = { novoValor ->
+                onValorAlterado(dateToDb(novoValor))
             },
-
             label = { Text(titulo) },
-            readOnly = false,
+            readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { showDatePicker = !showDatePicker }) {
                     Icon(
                         imageVector = Icons.Default.DateRange,
-                        contentDescription = "Select date"
+                        contentDescription = stringResource(R.string.select_date)
                     )
                 }
             },
@@ -496,11 +485,26 @@ fun DatePickerDocked(
             visualTransformation = DateVisualTransformation("##/##/####")
         )
 
-        if(showDatePicker){
-            DatePickerModal(
-                datePickerState = datePickerState,
-                onDismiss = {showDatePicker = false}
-            )
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = !showDatePicker },
+                confirmButton = {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let {
+                            val date = Instant
+                                .ofEpochMilli(it)
+                                .atZone(ZoneOffset.UTC)
+                                .toLocalDate()
+                            onValorAlterado(date.toString())
+                        }
+                        showDatePicker = !showDatePicker
+                    }) {
+                        Text(stringResource(R.string.ok))
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
         }
         if (campoFormulario.contemErro) {
             Text(
@@ -513,33 +517,17 @@ fun DatePickerDocked(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun DatePickerModal(
-    datePickerState: DatePickerState,
-    onDismiss: () -> Unit
-){
-    DatePickerDialog(
-        onDismissRequest = onDismiss,
-        confirmButton ={
-            TextButton(onClick = {onDismiss()}) {
-                Text("Selecionar")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancelar")
-            }
-        }
-    ){
-        DatePicker(state = datePickerState)
-    }
+fun dbToDate(data: String): String {
+    var dataRep = data.replace("-", "")
+    dataRep = dataRep.slice(6..7) + dataRep.slice(4..5) + dataRep.slice(0..3)
+    return dataRep
 }
 
-fun convertMillisToDate(millis: Long): String {
-    val date = Instant.ofEpochMilli(millis).atZone(ZoneOffset.UTC).toLocalDate()
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-    return date.format(formatter)
+fun dateToDb(data: String): String {
+    var dataRep = data.replace("/", "")
+    dataRep = dataRep.slice(4..7) + "-" + dataRep.slice(2..3) + "-" + dataRep.slice(0..1)
+
+    return dataRep
 }
 
 

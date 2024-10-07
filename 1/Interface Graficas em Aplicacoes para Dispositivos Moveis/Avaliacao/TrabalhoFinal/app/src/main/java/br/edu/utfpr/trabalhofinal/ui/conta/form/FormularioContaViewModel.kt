@@ -10,6 +10,9 @@ import br.edu.utfpr.trabalhofinal.data.TipoContaEnum
 import br.edu.utfpr.trabalhofinal.ui.Arguments
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
+
 class FormularioContaViewModel(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -73,10 +76,10 @@ class FormularioContaViewModel(
 
     fun onDataAlterada(novaData: String) {
         if (state.data.valor != novaData) {
-            var novaDataRep = novaData.replace(",", "")
-            novaDataRep = novaData.replace(".", "")
-            novaDataRep = novaData.replace("-", "")
-            novaDataRep = novaData.replace(" ", "")
+            var novaDataRep: String = novaData.replace(",", "")
+            novaDataRep = novaDataRep.replace(".", "")
+            novaDataRep = novaDataRep.replace("-", "")
+            novaDataRep = novaDataRep.replace(" ", "")
             state = state.copy(
                 data = state.data.copy(
                     valor = novaDataRep,
@@ -112,16 +115,24 @@ class FormularioContaViewModel(
         0
     }
 
-    private fun validarValor(valor: String): Int = if (valor.isBlank()){
+    private fun validarValor(valor: String): Int = if (valor.isBlank() || valor.toDouble() == 0.00){
         R.string.valor_obrigatoria
     } else {
         0
     }
 
-    private fun validarData(data: String): Int = if (data.isBlank()){
-        R.string.data_obrigatoria
-    } else {
-        0
+    private fun validarData(data: String): Int {
+        if (data.isBlank()) {
+            return R.string.data_obrigatoria
+        }
+
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            LocalDate.parse(data, formatter)
+            0
+        } catch (e: DateTimeParseException) {
+            R.string.data_invalida
+        }
     }
 
 

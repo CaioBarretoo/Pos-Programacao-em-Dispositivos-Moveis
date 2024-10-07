@@ -34,4 +34,6 @@
     <string name="atencao">Atenção</string>
     <string name="mensagem_confirmacao_remover_contato">Esse registro será removido permanentemente</string>
     <string name="valor_invalido">Informe um valor válido</string>
+    <string name="data_invalida">Data inválida</string>
+    <string name="select_date">Selecione a data</string>
 </resources>
