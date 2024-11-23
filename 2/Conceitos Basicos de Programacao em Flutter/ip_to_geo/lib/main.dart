@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:ip_to_geo/bindings/main_binding.dart';
 import 'package:ip_to_geo/map_location.dart';
 import 'package:ip_to_geo/widgets/conn_state.dart';
 import 'package:ip_to_geo/widgets/offline.dart';
@@ -6,6 +8,7 @@ import 'package:ip_to_geo/widgets/online.dart';
 
 const homeRoute = "/home";
 const mapRoute = "/map";
+
 void main() {
   runApp(const MyApp());
 }
@@ -16,7 +19,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -24,13 +27,18 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       initialRoute: homeRoute,
-      routes: {
-        homeRoute: (context) => const MyHomePage(),
-        mapRoute: (context) => MapLocation()
-      },
+      getPages: [
+        GetPage(
+            name: homeRoute,
+            page: () => const MyHomePage(),
+            binding: MainBindings()),
+        GetPage(
+            name: mapRoute,
+            page: () => MapLocation())
+      ],
     );
   }
-} 
+}
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
@@ -40,8 +48,10 @@ class MyHomePage extends StatefulWidget {
     return _MyHomePageState();
   }
 }
+
 class _MyHomePageState extends State<MyHomePage> {
   ConnectivityStatus _connectivityStatus = ConnectivityStatus.checking;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +59,6 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text("IP -> Geo"),
         actions: [
-          // 1
           TextButton(
               onPressed: () {},
               child: ConnStatus(
@@ -61,13 +70,13 @@ class _MyHomePageState extends State<MyHomePage> {
               ))
         ],
       ),
-      // 2
       body: Center(child: _getCurrentWidget()),
     );
   }
+
   Widget _getCurrentWidget() => switch (_connectivityStatus) {
-        ConnectivityStatus.checking => const CircularProgressIndicator(),
-        ConnectivityStatus.offline => const Offline(),
-        ConnectivityStatus.online => Online(),
-      };
+    ConnectivityStatus.checking => const CircularProgressIndicator(),
+    ConnectivityStatus.offline => Offline(),
+    ConnectivityStatus.online => Online(),
+  };
 }

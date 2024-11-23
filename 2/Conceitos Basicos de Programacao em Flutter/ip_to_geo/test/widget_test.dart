@@ -11,6 +11,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:ip_to_geo/main.dart';
 
 void main() {
+
+  test('test about my currency conversor', (){
+    //gherkin
+    //triple aaa (Arrange, Act, Assert)
+  });
+
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MyApp());

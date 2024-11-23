@@ -1,38 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:ip_to_geo/source/local/database.dart';
+import 'package:get/get.dart';
+import 'package:ip_to_geo/controllers/db_controller.dart';
 
-class Offline extends StatefulWidget {
-  const Offline({super.key});
-  @override
-  State<Offline> createState() => _OfflineState();
-}
-class _OfflineState extends State<Offline> {
-  final database = AppDatabase();
-  List<Widget> _listItens = [];
-  @override
-  void initState() {
-    super.initState();
-    readDB();
-  }
-  void readDB() async {
-    List<GeoDataData> allItems = await database.select(database.geoData).get();
-    _listItens = allItems
-        .map(
-          (geo) => ListTile(
-            title: Text(geo.ip),
-            subtitle: Text(geo.city),
-          ),
-        )
-        .toList();
-    setState(() {});
-  }
+class Offline extends GetView<DbController> {
   @override
   Widget build(BuildContext context) {
-    return ListView.separated(
-        itemBuilder: (context, index) => _listItens[index],
-        separatorBuilder: (context, index) => const Divider(
-              height: 1,
-            ),
-        itemCount: _listItens.length);
+    controller.getSavedData();
+    return controller.obx((allItems) {
+      List<ListTile> listItens = allItems
+          ?.map(
+            (geo) => ListTile(
+          title: Text(geo.ip),
+          subtitle: Text(geo.city),
+        ),
+      )
+          .toList() ??
+          [];
+      return ListView.separated(
+          itemBuilder: (context, index) => listItens[index],
+          separatorBuilder: (context, index) => const Divider(
+            height: 1,
+          ),
+          itemCount: listItens.length);
+    },
+        onError: (error) => Text(error.toString()),
+        onLoading: const CircularProgressIndicator());
   }
 }
