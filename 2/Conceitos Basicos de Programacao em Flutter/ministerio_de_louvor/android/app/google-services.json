@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "442626263403",
+    "project_id": "ministeriodelouvor-618d4",
+    "storage_bucket": "ministeriodelouvor-618d4.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:442626263403:android:b480b82d0c700fc9ad642e",
+        "android_client_info": {
+          "package_name": "com.example.ministerio_de_louvor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDiQ7HmB3qeHcaoLGUrx4ykvsagPd67l7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
