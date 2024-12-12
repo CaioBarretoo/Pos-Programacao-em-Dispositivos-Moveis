@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ministerio_de_louvor/database/database_service.dart';
+import 'package:ministerio_de_louvor/database/classes/schedule/database_service.dart';
+import 'package:ministerio_de_louvor/database/classes/repertoire/database_service.dart';
+
+import '../../retrofit/repertoire.dart';
 
 class HomeRegisterSchedule extends StatefulWidget {
   const HomeRegisterSchedule({super.key});
@@ -13,18 +16,68 @@ class HomeRegisterSchedule extends StatefulWidget {
 class _HomeRegisterScheduleState extends State<HomeRegisterSchedule> {
   final _formKey = GlobalKey<FormState>();
   DateTime? _selectedDate;
-  final _songs = <String>[];
-  final _singers = <String>[];
   final _members = <Map<String, String>>[];
+  final List<Repertoire> _selectedSongs = [];
 
-  final List<String> _instruments = [
-    'Ministro',
-    'BackVoice',
-    'Violão',
-    'Baixo',
-    'Guitarra',
-    'Teclado',
-  ];
+  List<Repertoire> _repertoire = [];
+
+  String _searchTerm = '';
+  List<Map<String, dynamic>> _membersData = [];
+
+  List<Repertoire> _filterMusics(List<Repertoire> musics, String searchTerm) {
+    if (searchTerm.isEmpty) {
+      return musics;
+    } else {
+      return musics
+          .where((music) =>
+              music.music.toLowerCase().contains(searchTerm.toLowerCase()))
+          .toList();
+    }
+  }
+
+  @override
+  initState() {
+    super.initState();
+    _fetchInstruments();
+    _fetchMembers();
+    _fetchRepertoire();
+  }
+
+  Future<void> _fetchRepertoire() async {
+    try {
+      _repertoire = await RepertoireDatabaseService().loadRepertoire();
+      setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao buscar repertório: $e')),
+      );
+    }
+  }
+
+  Future<void> _fetchInstruments() async {
+    try {
+      setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao buscar instrumentos: $e')),
+      );
+    }
+  }
+
+  Future<void> _fetchMembers() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance.collection('member').get();
+      setState(() {
+        _membersData = snapshot.docs.map((doc) => doc.data()).toList();
+      });
+    } catch (e) {
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Erro ao buscar membros: $e')),
+      );
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -43,193 +96,344 @@ class _HomeRegisterScheduleState extends State<HomeRegisterSchedule> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text("Registrar Escala"),
-      ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Expanded(
-              child: Padding(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: Text.rich(
+            TextSpan(
+              text: "Cadastrar Escala",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ),
+        body: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
-                child: ListView(
-                  children: [
-                    InkWell(
-                      onTap: () => _selectDate(context),
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Dia da Escala',
-                          border: OutlineInputBorder(),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              _selectedDate != null
-                                  ? DateFormat('dd/MM/yyyy').format(_selectedDate!)
-                                  : 'Selecione a data',
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: InkWell(
+                            onTap: () => _selectDate(context),
+                            child: InputDecorator(
+                              decoration: const InputDecoration(
+                                labelText: 'Dia da Escala',
+                                border: OutlineInputBorder(),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _selectedDate != null
+                                        ? DateFormat('dd/MM/yyyy')
+                                            .format(_selectedDate!)
+                                        : 'Selecione a data',
+                                  ),
+                                  const Icon(Icons.calendar_today),
+                                ],
+                              ),
                             ),
-                            const Icon(Icons.calendar_today),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text('Integrantes',
+                                  style: TextStyle(fontSize: 18)),
+                              const SizedBox(height: 16.0),
+                              SizedBox(
+                                height: 200,
+                                // Ajuste a altura conforme necessário
+                                child: ListView.builder(
+                                  itemCount: _members.length,
+                                  itemBuilder: (context, index) {
+                                    return Card(
+                                      color: Colors.grey[500],
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: IntrinsicWidth(
+                                                child: Wrap(
+                                                  children: [
+                                                    DropdownButtonFormField<
+                                                        String>(
+                                                      value: _members[index][
+                                                                      'name'] !=
+                                                                  null &&
+                                                              _membersData.any(
+                                                                  (memberData) =>
+                                                                      memberData[
+                                                                          'name'] ==
+                                                                      _members[
+                                                                              index]
+                                                                          [
+                                                                          'name'])
+                                                          ? _members[index]
+                                                              ['name']
+                                                          : null,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelStyle: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                              labelText:
+                                                                  'Nome'),
+                                                      items: _membersData
+                                                          .map((memberData) {
+                                                        return DropdownMenuItem<
+                                                            String>(
+                                                          value:
+                                                              memberData['name']
+                                                                  as String,
+                                                          child: Text(
+                                                              memberData['name']
+                                                                  as String),
+                                                        );
+                                                      }).toList(),
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          _members[index]
+                                                              ['name'] = value!;
+                                                          final selectedMember =
+                                                              _membersData
+                                                                  .firstWhere(
+                                                            (memberData) =>
+                                                                memberData[
+                                                                    'name'] ==
+                                                                value,
+                                                            orElse: () => {
+                                                              'instruments': []
+                                                            },
+                                                          );
+                                                          _members[index][
+                                                              'instruments'] = (selectedMember[
+                                                                      'instruments']
+                                                                  .isNotEmpty
+                                                              ? selectedMember[
+                                                                      'instruments']
+                                                                  [0] as String
+                                                              : null)!;
+                                                        });
+                                                      },
+                                                      hint: const Text(
+                                                          'Integrante'),
+                                                    ),
+                                                    const SizedBox(width: 10),
+                                                    DropdownButtonFormField<
+                                                        String>(
+                                                      value: _members[index][
+                                                                      'instruments'] !=
+                                                                  null &&
+                                                              _members[index][
+                                                                      'name'] !=
+                                                                  null &&
+                                                              _membersData.any((memberData) =>
+                                                                  memberData['name'] ==
+                                                                      _members[index]
+                                                                          [
+                                                                          'name'] &&
+                                                                  (memberData['instruments']
+                                                                          as List)
+                                                                      .contains(_members[index]['instruments']))
+                                                          ? _members[index]['instruments']
+                                                          : null,
+                                                      decoration:
+                                                          const InputDecoration(
+                                                              labelStyle:
+                                                                  TextStyle(
+                                                                      color: Colors
+                                                                          .black),
+                                                              labelText:
+                                                                  'Instrumento'),
+                                                      items: (_members[index]['name'] !=
+                                                                  null &&
+                                                              _membersData.any((memberData) =>
+                                                                  memberData['name'] ==
+                                                                  _members[index]
+                                                                      ['name']))
+                                                          ? (_membersData.firstWhere(
+                                                                  (memberData) =>
+                                                                      memberData['name'] ==
+                                                                      _members[index]
+                                                                          ['name'])['instruments'] as List<
+                                                                  dynamic>)
+                                                              .map((instrument) =>
+                                                                  DropdownMenuItem<String>(
+                                                                    value: instrument
+                                                                        as String,
+                                                                    child: Text(
+                                                                        instrument),
+                                                                  ))
+                                                              .toList()
+                                                          : [],
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          _members[index][
+                                                                  'instruments'] =
+                                                              value!;
+                                                        });
+                                                      },
+                                                      hint: const Text(
+                                                          'Instrumento'),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.delete),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _members.removeAt(index);
+                                                });
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (_membersData.isEmpty) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text(
+                                              'Não há membros disponíveis para adicionar!')),
+                                    );
+                                  } else {
+                                    setState(() {
+                                      _members.add({
+                                        'nome':
+                                            _membersData[0]['name'] as String,
+                                        // Adiciona o primeiro nome como padrão
+                                        'instrumento': '',
+                                        // Valor inicial vazio para o instrumento
+                                      });
+                                    });
+                                  }
+                                },
+                                child: const Text('Adicionar Integrante'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      Card(
+                        child: ExpansionTile(
+                          title: const Text('Músicas'),
+                          initiallyExpanded: true,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextField(
+                                onChanged: (text) {
+                                  setState(() {
+                                    _searchTerm = text;
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                  hintText: 'Pesquisar música...',
+                                  prefixIcon: Icon(Icons.search),
+                                  border: OutlineInputBorder(),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 200,
+                              child: ListView.builder(
+                                itemCount:
+                                    _filterMusics(_repertoire, _searchTerm)
+                                        .length,
+                                itemBuilder: (context, index) {
+                                  final music = _filterMusics(
+                                      _repertoire, _searchTerm)[index];
+                                  return Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(music.music),
+                                        leading: Checkbox(
+                                          value: _selectedSongs.contains(music),
+                                          onChanged: (bool? value) {
+                                            setState(() {
+                                              if (value == true) {
+                                                _selectedSongs.add(music);
+                                              } else {
+                                                _selectedSongs.remove(music);
+                                              }
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      const Divider(),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text('Integrantes', style: TextStyle(fontSize: 18)),
-                    ..._members.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final member = entry.value;
-                      return ListTile(
-                        title: Row(
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                initialValue: member['nome'],
-                                decoration: const InputDecoration(labelText: 'Nome'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _members[index]['nome'] = value;
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: DropdownButtonFormField<String>(
-                                value: member['instrumento'],
-                                decoration: const InputDecoration(labelText: 'Instrumento'),
-                                items: _instruments.map((instrument) => DropdownMenuItem(
-                                  value: instrument,
-                                  child: Text(instrument),
-                                )).toList(),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _members[index]['instrumento'] = value!;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            setState(() {
-                              _members.removeAt(index);
-                            });
-                          },
-                        ),
-                      );
-                    }).toList(),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _members.add({'nome': '', 'instrumento': _instruments[0]});
-                        });
-                      },
-                      child: const Text('Adicionar Integrante'),
-                    ),
-                    const SizedBox(height: 20),
-                    const Text('Músicas', style: TextStyle(fontSize: 18)),
-                    ..._songs.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final song = entry.value;
-                      return ListTile(
-                        title: Row(
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                initialValue: song,
-                                decoration: const InputDecoration(labelText: 'Nome da Música'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _songs[index] = value;
-                                  });
-                                },
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Expanded(
-                              child: TextFormField(
-                                initialValue: _singers[index],
-                                decoration: const InputDecoration(labelText: 'Cantor'),
-                                onChanged: (value) {
-                                  setState(() {
-                                    _singers[index] = value;
-                                  });
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            setState(() {
-                              _songs.removeAt(index);
-                              _singers.removeAt(index);
-                            });
-                          },
-                        ),
-                      );
-                    }).toList(),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _songs.add('');
-                          _singers.add('');
-                        });
-                      },
-                      child: const Text('Adicionar Música'),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      if (await DatabaseService().isDateAlreadySaved(_selectedDate!)) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Já existe uma escala para esta data. Por favor, altere a data.')),
-                        );
-                        return;
-                      }
-                      final scheduleData = {
-                        'date': Timestamp.fromDate(_selectedDate!),
-                        'songs': _songs,
-                        'singers': _singers,
-                        'members': _members,
-                      };
+                      const SizedBox(height: 32.0),
+                      SizedBox(
+                        width: 200,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate()) {
+                              if (await ScheduleDatabaseService()
+                                  .isDateAlreadySaved(_selectedDate!)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Já existe uma escala para esta data. Por favor, altere a data.')),
+                                );
+                                return;
+                              }
 
-                      await DatabaseService().insertSchedule(scheduleData);
+                              if (_members.isEmpty ||
+                                  _members.any((member) =>
+                                      member['name'] == null ||
+                                      member['name']!.isEmpty ||
+                                      member['instruments'] == null ||
+                                      member['instruments']!.isEmpty)) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          'Todos os membros devem ter um instrumento vinculado antes de salvar!')),
+                                );
+                                return;
+                              }
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Dados salvos no Firebase!')),
-                      );
-                      _formKey.currentState?.reset();
-                      setState(() {
-                        _selectedDate = null;
-                        _singers.clear();
-                        _songs.clear();
-                        _members.clear();
-                      });
-                    }
-                  },
-                  child: const Text('Salvar'),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+                              final scheduleData = {
+                                'date': Timestamp.fromDate(_selectedDate!),
+                                'songs': _selectedSongs
+                                    .map((music) => music.toJson())
+                                    .toList(),
+                                'members': _members,
+                              };
+
+                              await ScheduleDatabaseService()
+                                  .insertSchedule(scheduleData, context);
+                            }
+                          },
+                          child: const Text('Salvar Escala'),
+                        ),
+                      ),
+                    ]))));
   }
 }

@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:ministerio_de_louvor/details/home.dart';
-import 'package:ministerio_de_louvor/edit/home.dart';
-import 'package:ministerio_de_louvor/details/home.dart';
+import 'package:ministerio_de_louvor/details/schedule/home.dart';
+import 'package:ministerio_de_louvor/edit/Schedule/home.dart';
 
 import '../../register/schedule/home.dart';
 
 class HomeListSchedule extends StatefulWidget {
-  const HomeListSchedule({Key? key}) : super(key: key);
+  const HomeListSchedule({super.key});
 
   @override
   State<HomeListSchedule> createState() => _HomeListScheduleState();
@@ -35,7 +34,12 @@ class _HomeListScheduleState extends State<HomeListSchedule> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text("Listar Escala"),
+          title: Text.rich(
+            TextSpan(
+              text: "Escala",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
           bottom: const TabBar(
             tabs: [
               Tab(text: "Próximas"),
@@ -53,7 +57,8 @@ class _HomeListScheduleState extends State<HomeListSchedule> {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const HomeRegisterSchedule()),
+              MaterialPageRoute(
+                  builder: (context) => const HomeRegisterSchedule()),
             );
           },
           tooltip: 'Criar Nova Escala',
@@ -65,7 +70,7 @@ class _HomeListScheduleState extends State<HomeListSchedule> {
 
   Widget _buildScheduleList(BuildContext context, bool isUpcoming) {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('schedules').snapshots(),
+      stream: _firestore.collection('schedule').snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return const Center(child: Text('Erro ao carregar dados.'));
@@ -79,9 +84,18 @@ class _HomeListScheduleState extends State<HomeListSchedule> {
         final filteredSchedules = schedules.where((schedule) {
           final date =
               (schedule.data() as Map<String, dynamic>)['date'] as Timestamp;
-          return isUpcoming
-              ? date.toDate().isAfter(DateTime.now())
-              : date.toDate().isBefore(DateTime.now());
+          final today = DateTime.now();
+          final scheduleDate = date.toDate();
+          final yesterday = today
+              .subtract(const Duration(days: 1)); // Calcula a data de ontem
+
+          if (isUpcoming) {
+            return scheduleDate
+                    .isAfter(today.subtract(const Duration(days: 1))) ||
+                scheduleDate.isAtSameMomentAs(today);
+          } else {
+            return scheduleDate.isBefore(yesterday);
+          }
         }).toList();
 
         return ListView.builder(
@@ -94,38 +108,35 @@ class _HomeListScheduleState extends State<HomeListSchedule> {
             final formattedDate =
                 DateFormat('dd/MM/yyyy \nEEEE', 'pt_BR').format(date);
 
-
             return Card(
               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               elevation: 2,
               child: ListTile(
-                title:
-                    Text(formattedDate.toUpperCase(), style: const TextStyle(fontSize: 18)),
+                title: Text(formattedDate.toUpperCase(),
+                    style: const TextStyle(fontSize: 18)),
                 trailing: Row(
-                    mainAxisSize: MainAxisSize.min, // Para evitar que a Row ocupe toda a largura
-                    children: [
-                      IconButton(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  HomeEdit(
-                                      scheduleId: filteredSchedules[index].id
-                                  ),
+                              builder: (context) => HomeEditSchedule(
+                                scheduleId: filteredSchedules[index].id,
+                              ),
                             ),
                           );
-                        }
-                      ),
+                        }),
                   ],
                 ),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          HomeDetails(scheduleId: filteredSchedules[index].id),
+                      builder: (context) => HomeDetailsSchedule(
+                          scheduleId: filteredSchedules[index].id),
                     ),
                   );
                 },

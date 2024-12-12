@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:ministerio_de_louvor/home/home.dart';
-import 'package:ministerio_de_louvor/register/schedule/home.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:ministerio_de_louvor/list/repertoire/home.dart';
+import 'package:ministerio_de_louvor/theme/themes.dart';
 import 'firebase_options.dart';
 import 'list/schedule/home.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,14 +17,14 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      title: 'Ministério de Louvor',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
       localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate
@@ -62,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex), // Exibe a tela selecionada
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -80,7 +79,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.deepPurple, // Personalize a cor
         onTap: _onItemTapped,
       ),
     );
