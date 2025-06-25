@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">DoisFatores</string>
+    <string-array name="country_codes_array">
+        <item>🇧🇷 Brasil (+55)</item>
+        <item>🇺🇸 Estados Unidos (+1)</item>
+        <item>🇵🇹 Portugal (+351)</item>
+        <item>🇦🇷 Argentina (+54)</item>
+        <item>🇩🇪 Alemanha (+49)</item>
+        <item>🇯🇵 Japão (+81)</item>
+    </string-array>
+</resources>
